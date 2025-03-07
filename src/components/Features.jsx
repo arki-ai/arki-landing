@@ -1,178 +1,260 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IconPaperclip, IconQuestionMark, IconRoute, IconCards, IconChartBar, IconDeviceGamepad, IconStarsFilled } from "@tabler/icons-react";
-
-// Componente para cada item en el listado
-const FeatureItem = ({ icon, title, isActive, onClick, index }) => (
-	<motion.div
-		className={`mb-2 flex cursor-pointer items-center rounded-lg p-3 transition-all duration-200 ${isActive ? "border-l-4 border-[#ef7002] bg-[#f9f9f9]" : "border-l-4 border-transparent hover:bg-[#f9f9f9]"}`}
-		onClick={onClick}
-		whileHover={!isActive ? { x: 3 } : {}}
-		initial={{ opacity: 0, x: -10 }}
-		animate={{ opacity: 1, x: 0 }}
-		transition={{ duration: 0.2, delay: index * 0.05 }}
-	>
-		<div className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full ${isActive ? "text-[#ef7002]" : "text-[#0281EF]"}`}>
-			{React.cloneElement(icon, { size: 18 })}
-		</div>
-		<div className="ml-3">
-			<h3 className={`text-sm font-medium ${isActive ? "text-[#ef7002]" : "text-slate-700"}`}>{title}</h3>
-		</div>
-	</motion.div>
-);
-
-// Componente para el panel de detalle
-const FeatureDetail = ({ feature }) => (
-	<AnimatePresence mode="wait">
-		<motion.div
-			key={feature.title}
-			className="relative h-full overflow-hidden rounded-lg border border-slate-100 bg-white p-6"
-			initial={{ opacity: 0, y: 10 }}
-			animate={{ opacity: 1, y: 0 }}
-			exit={{ opacity: 0, y: -10 }}
-			transition={{ duration: 0.3 }}
-		>
-			<div className="relative">
-				<div className="mb-4 flex items-center">
-					<div className="mr-3 text-[#ef7002]">{React.cloneElement(feature.icon, { size: 24 })}</div>
-					<h2 className="text-xl font-bold text-slate-800">{feature.title}</h2>
-				</div>
-
-				<p className="mb-5 text-slate-600">{feature.description}</p>
-
-				<div className="border-t border-slate-100 pt-4">
-					<h4 className="mb-3 text-sm font-medium text-[#ef7002]">Beneficios clave</h4>
-					<ul className="space-y-2">
-						{feature.benefits.map((benefit, idx) => (
-							<li key={idx} className="flex items-start text-sm">
-								<span className="mr-2 text-[#0281EF]">•</span>
-								<span className="text-slate-600">{benefit}</span>
-							</li>
-						))}
-					</ul>
-				</div>
-			</div>
-		</motion.div>
-	</AnimatePresence>
-);
+import { 
+  IconPaperclip, 
+  IconQuestionMark, 
+  IconRoute, 
+  IconCards, 
+  IconChartBar, 
+  IconDeviceGamepad
+} from "@tabler/icons-react";
 
 const Features = () => {
-	const [activeFeature, setActiveFeature] = useState(0);
+  const [activeFeature, setActiveFeature] = useState(null);
 
-	// Cambio automático de características
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setActiveFeature(prev => (prev + 1) % featuresData.length);
-		}, 8000);
+  const featuresData = [
+    {
+      id: "docs",
+      title: "Documentos",
+      icon: <IconPaperclip />,
+      color: "#0281ef", // arkiblue-600
+      description: "Convierte cualquier PDF o libro en material de estudio estructurado",
+    },
+    {
+      id: "quiz",
+      title: "Quizzes",
+      icon: <IconQuestionMark />,
+      color: "#7c5bd9", // arkipurple-600
+      description: "Preguntas inteligentes adaptadas a tu nivel de aprendizaje",
+    },
+    {
+      id: "path",
+      title: "Rutas",
+      icon: <IconRoute />,
+      color: "#0281ef", // arkiblue-600
+      description: "Plan personalizado que optimiza tu tiempo de estudio",
+    },
+    {
+      id: "cards",
+      title: "Flashcards",
+      icon: <IconCards />,
+      color: "#e67e45", // arkiorange-600
+      description: "Memorización efectiva con sistema de repetición espaciada",
+    },
+    {
+      id: "stats",
+      title: "Análisis",
+      icon: <IconChartBar />,
+      color: "#0281ef", // arkiblue-600
+      description: "Visualiza tu progreso y areas de mejora en tiempo real",
+    },
+    {
+      id: "game",
+      title: "Gamificación",
+      icon: <IconDeviceGamepad />,
+      color: "#e67e45", // arkiorange-600
+      description: "Mantén alta motivación con elementos de juego",
+    },
+  ];
 
-		return () => clearInterval(interval);
-	}, []);
+  const handleFeatureClick = (id) => {
+    setActiveFeature(activeFeature === id ? null : id);
+  };
 
-	const featuresData = [
-		{
-			title: "Sube tus documentos",
-			description: "Carga tus PDFs, libros o apuntes y Arki procesará automáticamente tu contenido, extrayendo conceptos clave para tu aprendizaje.",
-			icon: <IconPaperclip />,
-			benefits: [
-				"Procesamiento inteligente de textos y materiales",
-				"Extracción automática de conceptos importantes",
-				"Compatible con múltiples formatos (PDF, DOCX, TXT)",
-			],
-		},
-		{
-			title: "Quizzes personalizados",
-			description: "Practica con preguntas generadas a partir de tu propio material de estudio, adaptadas a tu nivel de conocimiento actual.",
-			icon: <IconQuestionMark />,
-			benefits: [
-				"Preguntas adaptadas a tu nivel de conocimiento",
-				"Retroalimentación inmediata para cada respuesta",
-				"Enfoque en tus áreas de mejora",
-			],
-		},
-		{
-			title: "Rutas de aprendizaje",
-			description: "Recibe un plan de estudio personalizado adaptado a tu ritmo y nivel de comprensión para maximizar tu retención.",
-			icon: <IconRoute />,
-			benefits: ["Secuencia de aprendizaje optimizada", "Adaptación automática según tu progreso", "Enfoque en conexiones entre conceptos"],
-		},
-		{
-			title: "Flashcards interactivas",
-			description: "Mejora tu memoria con tarjetas interactivas generadas a partir de los conceptos más importantes de tu material.",
-			icon: <IconCards />,
-			benefits: [
-				"Sistema de repetición espaciada para mejor retención",
-				"Tarjetas interactivas con ejemplos contextualizados",
-				"Algoritmos que priorizan lo que estás por olvidar",
-			],
-		},
-		{
-			title: "Análisis de progreso",
-			description: "Visualiza tu avance con métricas que muestran tus fortalezas y áreas de oportunidad para un estudio efectivo.",
-			icon: <IconChartBar />,
-			benefits: [
-				"Estadísticas detalladas sobre tu rendimiento",
-				"Identificación automática de tus puntos débiles",
-				"Recomendaciones basadas en datos",
-			],
-		},
-		{
-			title: "Gamificación",
-			description: "Mantén la motivación alta con elementos que hacen del estudio una experiencia divertida y adictiva.",
-			icon: <IconDeviceGamepad />,
-			benefits: ["Sistema de puntos y recompensas", "Retos diarios y competencias amistosas", "Desbloqueo de logros que marcan tu progreso"],
-		},
-	];
+  const SvgIllustration = ({ id }) => {
+    // Colores de la paleta
+    const colors = {
+      docs: "#0281ef", // arkiblue-600
+      quiz: "#7c5bd9", // arkipurple-600
+      path: "#0281ef", // arkiblue-600
+      cards: "#e67e45", // arkiorange-600
+      stats: "#0281ef", // arkiblue-600
+      game: "#e67e45", // arkiorange-600
+    };
+    
+    // SVG simples para cada característica con colores de la paleta
+    const illustrations = {
+      docs: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" className="h-full w-full">
+          <rect x="40" y="20" width="120" height="80" rx="4" fill={colors.docs} fillOpacity="0.1" />
+          <rect x="50" y="30" width="100" height="10" rx="2" fill={colors.docs} fillOpacity="0.4" />
+          <rect x="50" y="50" width="100" height="5" rx="2" fill={colors.docs} fillOpacity="0.3" />
+          <rect x="50" y="60" width="80" height="5" rx="2" fill={colors.docs} fillOpacity="0.3" />
+          <rect x="50" y="70" width="90" height="5" rx="2" fill={colors.docs} fillOpacity="0.3" />
+          <rect x="50" y="80" width="60" height="5" rx="2" fill={colors.docs} fillOpacity="0.3" />
+        </svg>
+      ),
+      quiz: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" className="h-full w-full">
+          <rect x="40" y="20" width="120" height="80" rx="4" fill={colors.quiz} fillOpacity="0.1" />
+          <rect x="50" y="30" width="100" height="10" rx="2" fill={colors.quiz} fillOpacity="0.4" />
+          <rect x="50" y="50" width="100" height="8" rx="4" fill={colors.quiz} fillOpacity="0.3" />
+          <rect x="50" y="65" width="100" height="8" rx="4" fill={colors.quiz} fillOpacity="0.2" />
+          <rect x="50" y="80" width="100" height="8" rx="4" fill={colors.quiz} fillOpacity="0.1" />
+        </svg>
+      ),
+      path: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" className="h-full w-full">
+          <path d="M40,60 Q70,20 100,60 Q130,100 160,60" stroke={colors.path} strokeWidth="3" fill="none" />
+          <circle cx="40" cy="60" r="6" fill={colors.path} />
+          <circle cx="100" cy="60" r="6" fill={colors.path} />
+          <circle cx="160" cy="60" r="6" fill={colors.path} />
+        </svg>
+      ),
+      cards: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" className="h-full w-full">
+          <rect x="35" y="35" width="60" height="80" rx="4" fill={colors.cards} fillOpacity="0.2" transform="rotate(-5 35 35)" />
+          <rect x="70" y="30" width="60" height="80" rx="4" fill={colors.cards} fillOpacity="0.4" transform="rotate(0 70 30)" />
+          <rect x="105" y="35" width="60" height="80" rx="4" fill={colors.cards} fillOpacity="0.6" transform="rotate(5 105 35)" />
+        </svg>
+      ),
+      stats: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" className="h-full w-full">
+          <rect x="40" y="80" width="20" height="20" rx="2" fill={colors.stats} />
+          <rect x="70" y="60" width="20" height="40" rx="2" fill={colors.stats} fillOpacity="0.8" />
+          <rect x="100" y="40" width="20" height="60" rx="2" fill={colors.stats} fillOpacity="0.6" />
+          <rect x="130" y="30" width="20" height="70" rx="2" fill={colors.stats} fillOpacity="0.4" />
+          <path d="M40,80 L70,60 L100,40 L130,30" stroke={colors.stats} strokeWidth="2" fill="none" />
+        </svg>
+      ),
+      game: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" className="h-full w-full">
+          <circle cx="100" cy="60" r="40" fill={colors.game} fillOpacity="0.1" />
+          <polygon points="100,30 120,50 120,70 100,90 80,70 80,50" fill={colors.game} fillOpacity="0.4" />
+          <circle cx="100" cy="60" r="10" fill={colors.game} />
+        </svg>
+      ),
+    };
 
-	return (
-		<section className="relative bg-white py-12">
-			<div className="container mx-auto px-4 sm:px-6">
-				<div className="mx-auto max-w-5xl">
-					{/* Encabezado de la sección */}
-					<motion.div
-						className="mb-10 text-center"
-						initial={{ opacity: 0, y: -10 }}
-						whileInView={{ opacity: 1, y: 0 }}
+    return illustrations[id] || null;
+  };
+
+  return (
+    <section className="relative bg-[#0A1525] py-20 text-white overflow-hidden">
+      {/* Fondo minimalista */}
+      
+      <div className="container relative mx-auto max-w-6xl px-4">
+        <div className="relative">
+          <motion.div 
+            className="relative mb-16 text-center"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+					<motion.span 
+						initial={{ y: -10, opacity: 0 }}
+						whileInView={{ y: 0, opacity: 1 }}
+						transition={{ duration: 0.4 }}
 						viewport={{ once: true }}
-						transition={{ duration: 0.3 }}
+						className="mb-3 inline-block text-sm font-medium text-arkiorange-600"
 					>
-						<motion.div className="mb-5 inline-block" whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-							<span className="flex items-center justify-center gap-2 rounded-full border border-[#ef7002]/30 bg-[#ef7002]/5 px-3 py-1.5 text-sm text-[#ef7002]">
-								<IconStarsFilled size={16} />
-								<span>Características principales</span>
-							</span>
-						</motion.div>
-						<h2 className="mb-2 text-2xl font-bold text-slate-800 md:text-3xl">¿Qué puedes hacer con Arki?</h2>
-						<p className="mx-auto max-w-2xl text-slate-600">Descubre las funcionalidades que hacen de Arki tu mejor aliado en el aprendizaje.</p>
-					</motion.div>
+						FUNCIONALIDADES PRINCIPALES
+					</motion.span>
+            
+            <motion.h2 
+              className="mb-4 text-4xl font-bold leading-tight md:text-5xl"
+              initial={{ y: 10, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+            >
+              <motion.span 
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+                viewport={{ once: true }}
+                className="block"
+              >
+                Todo lo que necesitas para
+              </motion.span>
+              <motion.span 
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.4, delay: 0.3 }}
+                viewport={{ once: true }}
+                className="text-arkiblue-600"
+              >
+                aprender efectivamente
+              </motion.span>
+            </motion.h2>
+            
+            <motion.p 
+              className="mx-auto max-w-2xl text-lg text-slate-300"
+              initial={{ y: 10, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              Herramientas poderosas que transforman tu material de estudio en un sistema de aprendizaje optimizado
+            </motion.p>
+          </motion.div>
+        </div>
 
-					<div className="grid grid-cols-1 gap-5 md:grid-cols-12">
-						{/* Lista de características (izquierda) */}
-						<div className="md:col-span-4">
-							<div className="rounded-lg border border-slate-100 bg-white p-3">
-								<h3 className="mb-3 ml-2 text-xs font-medium uppercase text-slate-400">Funcionalidades</h3>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {featuresData.map((feature) => (
+            <motion.div
+              key={feature.id}
+              className={`group relative overflow-hidden rounded-lg ${
+                activeFeature === feature.id 
+                ? "ring-1 ring-opacity-30"
+                : "bg-slate-800/20 hover:bg-slate-800/30"
+              } transition-all duration-300 backdrop-blur-sm`}
+              style={{ 
+                backgroundColor: activeFeature === feature.id ? `${feature.color}10` : '',
+                ringColor: feature.color
+              }}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+              onClick={() => handleFeatureClick(feature.id)}
+            >
+              <div className="p-5">
+                <div 
+                  className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-300"
+                  style={{ 
+                    backgroundColor: `${feature.color}15`,
+                    color: feature.color 
+                  }}
+                >
+                  {React.cloneElement(feature.icon, { size: 20 })}
+                </div>
+                
+                <h3 className="mb-2 text-lg font-bold">{feature.title}</h3>
+                <p className="text-sm text-slate-400">{feature.description}</p>
+              </div>
 
-								{featuresData.map((feature, index) => (
-									<FeatureItem
-										key={index}
-										icon={feature.icon}
-										title={feature.title}
-										isActive={activeFeature === index}
-										onClick={() => setActiveFeature(index)}
-										index={index}
-									/>
-								))}
-							</div>
-						</div>
+              <AnimatePresence>
+                {activeFeature === feature.id && (
+                  <motion.div 
+                    className="h-44 overflow-hidden border-t border-t-white/5 bg-gradient-to-b from-slate-800/30 to-slate-900/30"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 176 }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="h-full p-6">
+                      <SvgIllustration id={feature.id} />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
-						{/* Detalle de característica (derecha) */}
-						<div className="md:col-span-8">
-							<FeatureDetail feature={featuresData[activeFeature]} />
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	);
+              <div 
+                className="absolute bottom-0 left-0 h-0.5 w-full transition-transform duration-500 ease-in-out"
+                style={{ 
+                  background: feature.color,
+                  transform: `scaleX(${activeFeature === feature.id ? 1 : 0})`,
+                  transformOrigin: 'left'
+                }}
+              />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default Features;
